@@ -1,1 +1,1 @@
-# ee376a_final_project
+# EE376a Final Project

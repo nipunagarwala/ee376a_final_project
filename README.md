@@ -4,7 +4,7 @@ MRI Undersampled dataset link: http://mridata.org/undersampled
 
 Data repo: /afs/ir.stanford.edu/users/n/i/nipuna1/EE376A
 
-## `algorithms.py`
+## algorithms.py
 Basic framework for your algorithm implementation. The basic equation is `y=Ax`.
 
 ### Parameters
@@ -22,7 +22,7 @@ Basic framework for your algorithm implementation. The basic equation is `y=Ax`.
   * `plot()` : Plots `self.x` and `self.x_pred`.
   * `eval_error()` : Calculates the MSE and sparsity error metrics.
 
-## `test.py`
+## test.py
 Used to test the algorithms.
 
   * `test_sound()` : Generates sound according to `soundType`, and applies the algorithm on it. Saves the result in .wav format. Testing is repeated `repNum` times.
@@ -31,7 +31,7 @@ Used to test the algorithms.
   * `test_real_img()` : Loads a real image as defined in @img_name, and applies the algorithm. Set `use_fft` to True/False to convert the image to frequency domain (i.e. apply np.fft.fft2()).
   * `test_any()` : General testing module. Manually set the data generation method. (set `alg.input_func` and `alg.input_func_args`) Testing is repeated `repNum` times.
 
-## `data_gen.py`
+## data_gen.py
 Generates the data. `size` and `params` are passed in for all functions, where `size` is an integer defining the size of the generated output, and `params` characterizes the distribution to be sampled from.
 
   * `gen_sound_dataset()` : Generates a sound dataset with notes as defined in `params`.

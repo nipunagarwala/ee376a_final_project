@@ -35,23 +35,23 @@ Used to test the algorithms.
 Generates the data. `size` and `params` are passed in for all functions, where `size` is an integer defining the size of the generated output, and `params` characterizes the distribution to be sampled from.
 
   * `gen_sound_dataset()` : Generates a sound dataset with notes as defined in `params`.
-    * `params` = `(note_list, fs)`
+    * params = (note_list, fs)
       * `note_list` : an array of tuples of (`amplitude`, `note frequency`, `phase`)
       * `fs` : sampling frequency
 
   * `gen_random_sound_dataset()` : Generates a sound dataset with 1 to 4 random notes between C3-B4 (defined in `NOTES`). 
-    * `params` = `fs`
+    * params = fs
       * `fs` : sampling frequency
 
   * `gen_verdu_dataset()` : Generates a dataset in which each element's distribution as defined by Verdu et al. Basically a Bernouilli distribution with normal distribution instead of 1. 
-    * `params` = `(gamma,sigma,mean)`
+    * params = (gamma,sigma,mean)
       * `gamma` : Bernouilli probability 
       * `sigma, mean` : Parametrizes the normal distribution
  
   * `gen_basic_dataset()` : Generates a dataset of 0 and 1, with `K` 1's. 
-    * `params` = `K`
+    * params = K
       * `K` : Number of 1's 
  
   * `gen_random_dataset()` : Generates a dataset in which each element is drawn from a Gaussian distribution. Not sparse. 
-    * `params` = `(mu, sig)`
+    * params = (mu, sig)
       * `mu, sig` : Parametrizes the normal distribution

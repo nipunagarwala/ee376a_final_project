@@ -97,9 +97,15 @@ def test_any(alg, repNum=1):
 	return performance
 
 if __name__ == "__main__":
-	alg = IST(input_func=gen_basic_dataset, 
-			  input_func_args=50, 
-			  A_func=create_A_matrix, 
-			  N=1024, M=512, thresholdR=0.000001, lam=0.5)
+	# alg = OMP(input_func=gen_basic_dataset, 
+	# 		  input_func_args=50, 
+	# 		  A_func=create_A_matrix, 
+	# 		  N=1024, M=512, threshold=0.5)
 
-	test_real_img(alg, 'lenna64.png', use_fft=True)
+	# test_real_img(alg, 'dataset/ee376a.png', use_fft=False)
+	
+	alg = OMP(input_func=gen_verdu_dataset, 
+			  input_func_args=(0.2, 1, 0), 
+			  A_func=create_A_matrix, 
+			  N=1024, M=512, threshold=0.5)
+	test_any(alg)

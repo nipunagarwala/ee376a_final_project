@@ -48,8 +48,14 @@ class OMP(Algorithm):
 			residual = self.y - np.matmul(At, self.x_pred[T])
 
 			counter += 1
-			if counter%20==0:
+			if counter%25==0:
 				print np.sum(np.abs(residual))
+
+			if counter%500==0:
+				print 'writing...'
+				save_img(self.x_pred, self.img_shape, 
+						 '%s_%d.png'%(self.input_func_args[0].replace('.png',''),counter),
+						 use_fft=self.input_func_args[1])
 
 		return self.x_pred
 

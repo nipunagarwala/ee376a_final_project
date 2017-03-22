@@ -1,4 +1,5 @@
 from algo_by_yuki import OMP,IST
+from algo_by_tun import AMP
 
 from data_gen import *
 
@@ -104,8 +105,15 @@ if __name__ == "__main__":
 
 	# test_real_img(alg, 'dataset/ee376a.png', use_fft=False)
 	
-	alg = OMP(input_func=gen_verdu_dataset, 
-			  input_func_args=(0.2, 1, 0), 
+	# alg = OMP(input_func=gen_verdu_dataset, 
+	# 		  input_func_args=(0.2, 1, 0), 
+	# 		  A_func=create_A_matrix, 
+	# 		  N=1024, M=512, threshold=0.5)
+
+	alg = AMP(input_func=gen_basic_dataset, 
+			  input_func_args=10, 
 			  A_func=create_A_matrix, 
-			  N=1024, M=512, threshold=0.5)
+			  N=1024, M=512,
+			  lam=100, epsilon=1e-4, delta=1000000000)
+
 	test_any(alg)

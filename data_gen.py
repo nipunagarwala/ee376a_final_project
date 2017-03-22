@@ -142,5 +142,15 @@ def create_A_matrix(sz):
 
 	return A
 
+def create_normal_A_matrix(sz):
+	"""
+	Generates the 'A' matrix.
+
+	@sz - tuple / size of A
+	"""
+	A = numpy.random.normal(0,1,sz)
+
+	return A
+
 if __name__ == "__main__":
 	pass

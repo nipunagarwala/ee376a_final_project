@@ -69,6 +69,19 @@ def plot_spectrogram_from_file(filename):
 
 	plt.show()
 
+def find_mse(reconstruct_png, orig_png):
+	orig_data = misc.imread(orig_png, flatten=True)/255.0
+	reconstruct_data = misc.imread(reconstruct_png, flatten=True)/255.0
+
+	mse_error = np.sum((orig_data - reconstruct_data)**2)
+	matches = np.logical_xor((reconstruct_data !=0 ),(orig_data !=0 ))
+	sparsity = np.sum(matches)/float(len(orig_data))
+
+	print "MSE Error is: {0}".format(mse_error)
+	print "Match Error Rate is {0}".format(sparsity)
+
+
+
 if __name__ == "__main__":
 	# plot_2d(np.load('verdu_size_20by20_gamma_0.9_sigma_1_mean_0.npy'))
 	# plot_spectrogram_from_file('results/nb_results/wind_lq_predicted.wav')

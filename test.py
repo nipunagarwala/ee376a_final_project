@@ -1,5 +1,5 @@
 from algo_by_yuki import OMP,IST,NB
-from algo_by_tun import AMP
+from algo_by_nipun import AMP
 
 from data_gen import *
 
@@ -112,11 +112,10 @@ if __name__ == "__main__":
 	# 		  N=1024, M=512,
 	# 		  thresholdR=0.0000005, lam=0.1)
 
-	# alg = AMP(input_func=gen_basic_dataset, 
-	# 		  input_func_args=10, 
-	# 		  A_func=create_normal_A_matrix, 
-	# 		  N=1024, M=512,
-	# 		  lam=0.5, epsilon=1e-4, delta=10)
+	alg = AMP(input_func=gen_basic_dataset, 
+			  input_func_args=10, 
+			  A_func=create_normal_A_matrix, 
+			  N=1024, M=512, epsilon=1e-2, num_iter = 1000)
 
 	# alg = NB(input_func=gen_basic_dataset, 
 	# 		 input_func_args=10, 

@@ -111,9 +111,9 @@ def gen_basic_dataset(size, params):
 	"""
 	Generates a signal of size @size, with K elements being 1's (i.e. K-sparse)
 	"""
-	K = params
 
 	data = np.zeros(size)
+	K = np.ceil(0.01*size).astype(int)
 	indx = np.random.choice(size, size=K, replace=False)
 	data[indx] = 1
 
@@ -139,7 +139,7 @@ def create_A_matrix(sz, param=None):
 
 	@sz - tuple / size of A
 	"""
-	A = np.random.random(sz)
+	A = 1/np.sqrt(sz[0])*np.random.randn(sz)
 
 	return A
 
@@ -149,7 +149,7 @@ def create_normal_A_matrix(sz, param=None):
 
 	@sz - tuple / size of A
 	"""
-	A = np.random.normal(0,1,sz)
+	A = np.random.normal(0,1.0/512,sz)
 
 	return A
 

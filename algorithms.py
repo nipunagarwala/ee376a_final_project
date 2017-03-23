@@ -7,6 +7,9 @@ from utils import *
 from scipy.io import wavfile
 from scipy import misc
 
+import pywt
+from scipy import signal
+
 from scipy import misc
 class Algorithm(object):
 
@@ -39,7 +42,7 @@ class Algorithm(object):
 		Loads a real data
 		"""
 
-		filename,use_fft = params
+		filename,use_transform = params
 		if '.wav' in filename:			
 			fs,data = wavfile.read(filename)
 			data = data[fs*6:fs*16]
@@ -47,10 +50,20 @@ class Algorithm(object):
 			data = misc.imread(filename, flatten=True)/255.0
 			self.img_shape = data.shape
 
-			if use_fft:
-				data = np.fft.fft2(data)
+			if use_transform:
+				cA, (cH, cV, cD) = pywt.dwt2(data, 'haar')
+				self.cA_shape = cA.shape
+				self.cH_shape = cH.shape
+				self.cV_shape = cV.shape
+				self.cD_shape = cD.shape
+				self.cA_end = cA.size
+				self.cH_end = self.cA_end + cH.size
+				self.cV_end = self.cH_end + cV.size
+				data = np.concatenate((cA.flatten(), cH.flatten(), 
+									  cV.flatten(), cD.flatten()))
+			else:
+				data = data.flatten()
 
-			data = data.flatten()
 			self.N = data.size
 			self.M = self.N/2
 
@@ -100,6 +113,9 @@ class Algorithm(object):
 
 			# convert to time domain
 			time_signal = np.real(np.matmul(np.conj(basis_mtrx), self.x_pred))
+			smoother = np.asarray(np.linspace(0,0.5,50).tolist() + np.linspace(0.5,0,50).tolist())
+			if wav_x_pred.size!=0:
+				wav_x_pred[-101:-1] = wav_x_pred[-101:-1] + smoother*(time_signal[0:100]-wav_x_pred[-101:-1])
 			wav_x_pred = np.concatenate((wav_x_pred, time_signal))
 
 			new_mse,new_sparsity_err = self.eval_error()
@@ -155,6 +171,23 @@ class Algorithm(object):
 
 		plt.subplot(2, 1, 2)
 		plt.plot(range(self.N), self.x_pred)
+
+		plt.show()
+
+	def plot_spectrogram(self, fs):
+		plt.subplot(2, 1, 1)
+		f, t, Sxx = signal.spectrogram(self.x, fs)
+
+		plt.pcolormesh(t, f, Sxx)
+		plt.ylabel('Frequency [Hz]')
+		plt.xlabel('Time [sec]')
+
+		plt.subplot(2, 1, 2)
+		f, t, Sxx = signal.spectrogram(self.x_pred, fs)
+		
+		plt.pcolormesh(t, f, Sxx)
+		plt.ylabel('Frequency [Hz]')
+		plt.xlabel('Time [sec]')
 
 		plt.show()
 

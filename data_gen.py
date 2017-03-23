@@ -153,7 +153,7 @@ def create_normal_A_matrix(sz, param=None):
 
 	return A
 
-def create_0_1_A_matrix(sz, param=0.1):
+def create_0_1_A_matrix(sz, param=0.002):`
 	"""
 	Generates the 'A' matrix.
 

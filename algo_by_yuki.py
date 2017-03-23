@@ -3,6 +3,8 @@ import numpy as np
 from data_gen import *
 from algorithms import Algorithm
 
+RESID_VAL = 0.1
+
 class null_hyp(Algorithm):
 	"""
 	You say that the signal is sparse?
@@ -26,9 +28,10 @@ class OMP(Algorithm):
 	Also known as greedy algorithm
 	"""
 
-	def __init__(self, input_func, input_func_args, A_func, N, M, threshold=0.1):
+	def __init__(self, input_func, input_func_args, A_func, N, M, threshold=0.1, num_iter=500):
 		Algorithm.__init__(self, input_func, input_func_args, A_func, N, M)
 		self.threshold = threshold
+		self.num_iter = num_iter
 
 	def predict(self):
 		self.x_pred = np.zeros(self.N, dtype=np.complex)
@@ -36,7 +39,7 @@ class OMP(Algorithm):
 		residual = self.y[:]
 		T = []
 		counter = 0
-		while np.sum(np.abs(residual))>self.threshold:
+		while np.sum(np.abs(residual))>self.threshold or counter<self.num_iter:
 			dotP = np.abs(np.matmul(np.conj(residual), self.A))
 			new_indx = np.argmax(dotP)
 
@@ -49,13 +52,14 @@ class OMP(Algorithm):
 
 			counter += 1
 			if counter%25==0:
-				print np.sum(np.abs(residual))
+				if residual<RESID_VAL:
+					break
 
 			if counter%500==0:
 				print 'writing...'
-				save_img(self.x_pred, self.img_shape, 
-						 '%s_%d.png'%(self.input_func_args[0].replace('.png',''),counter),
-						 use_fft=self.input_func_args[1])
+				# save_img(self.x_pred, self, 
+				# 		 '%s_%d.png'%(self.input_func_args[0].replace('.png',''),counter),
+				# 		 use_transform=self.input_func_args[1])
 
 		return self.x_pred
 
@@ -68,10 +72,12 @@ class IST(Algorithm):
 		https://pdfs.semanticscholar.org/b2ff/10caa8005521bd8a4d165d44d14df3d841e1.pdf
 	"""
 
-	def __init__(self, input_func, input_func_args, A_func, N, M, thresholdR=0.05, lam=0.5):
+	def __init__(self, input_func, input_func_args, A_func, N, M, 
+				 thresholdR=0.05, lam=0.5, num_iter=500):
 		Algorithm.__init__(self, input_func, input_func_args, A_func, N, M)
 		self.thresholdR = thresholdR
 		self.lam = lam
+		self.num_iter = num_iter
 
 	def predict(self):
 		# determine c to be larger than the largest singular value of AtA.
@@ -88,7 +94,7 @@ class IST(Algorithm):
 		# set residual values to at least run the loop twice
 		last_resid = 10
 		resid = 1
-		while True:
+		while counter<self.num_iter:
 			eta_x = self.x_pred + 1/c*np.matmul(self.A.T, (self.y - np.matmul(self.A, self.x_pred)))
 			self.x_pred = np.sign(eta_x)*np.maximum(np.abs(eta_x)-eta_theta, zero_array)
 
@@ -96,16 +102,20 @@ class IST(Algorithm):
 			if counter%25==0:
 				last_resid = resid
 				resid = np.sum(np.abs(self.y - np.matmul(self.A, self.x_pred)))
+
+				if residual<RESID_VAL:
+					break
+					
 				print resid
 
-				if ((resid<last_resid) and (abs(resid-last_resid)/resid < self.thresholdR)) or resid<1:
-					break
+				# if ((resid<last_resid) and (abs(resid-last_resid)/resid < self.thresholdR)) or resid<1:
+				# 	break
 
 			if counter%500==1:
 				print 'writing...'
-				# save_img(self.x_pred, self.img_shape, 
+				# save_img(self.x_pred, self, 
 				# 		 '%s_%d.png'%(self.input_func_args[0].replace('.png',''),counter),
-				# 		 use_fft=self.input_func_args[1])
+				# 		 use_transform=self.input_func_args[1])
 
 		return self.x_pred
 
@@ -114,8 +124,9 @@ class NB(Algorithm):
 	Implementation of the Node-Based Algorithm
 	"""
 
-	def __init__(self, input_func, input_func_args, A_func, N, M, A_param):
+	def __init__(self, input_func, input_func_args, A_func, N, M, A_param, num_iter=500):
 		Algorithm.__init__(self, input_func, input_func_args, A_func, N, M, A_param=A_param)
+		self.num_iter = num_iter
 
 	def predict(self):
 		# stats on A
@@ -135,7 +146,7 @@ class NB(Algorithm):
 		epsilon = 0.01
 		prevS = -1
 		# iteration
-		while True:
+		while count<self.num_iter:
 			for n in range(self.N):
 				if s[n]==1:
 					continue
@@ -164,15 +175,15 @@ class NB(Algorithm):
 				xi[m] = self.y[m] - np.dot(s[connectedToI[m]], w[connectedToI[m]])
 
 			count += 1
-			# if count==100:
-			# 	break
+			if count==500:
+				break
 			if count%2==0:
 				print '.'
 			if count%25==1:
 				print 'writing...'
 				# save_img(w, self.img_shape, 
 				# 		 '%s_%d.png'%(self.input_func_args[0].replace('.png',''),count),
-				# 		 use_fft=self.input_func_args[1])
+				# 		 use_transform=self.input_func_args[1])
 
 			if np.sum(s)==self.N or prevS==np.sum(s):
 				break

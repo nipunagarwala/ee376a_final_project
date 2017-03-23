@@ -34,6 +34,8 @@ def test_sound(alg, repNum, soundType):
 	save_freq_domain_wav(alg.x, fs, '%s_sound.wav'%soundType)
 	save_freq_domain_wav(alg.x_pred, fs, '%s_sound_predicted.wav'%soundType)
 
+	alg.plot_spectrogram(fs)
+
 	return performance
 
 def test_real_song(alg):
@@ -61,26 +63,27 @@ def test_random_noise_img(alg, repNum=1):
 	print performance
 	alg.plot()
 
-	img_sz = (math.sqrt(alg.N),math.sqrt(alg.N))
-	save_img(alg.x, img_sz, 'random_original.png', False)
-	save_img(alg.x_pred, img_sz, 'random_predicted.png', False)
+	alg.shape = (math.sqrt(alg.N),math.sqrt(alg.N))
+	save_img(alg.x, alg, 'random_original.png', False)
+	save_img(alg.x_pred, alg, 'random_predicted.png', False)
 
 	return performance
 
-def test_real_img(alg, img_name, use_fft):
+def test_real_img(alg, img_name, use_transform, plot_on=False):
 	"""
 	Loads a real image as defined in @img_name, and applies @alg.
 	Set @use_fft to True/False to convert the image to frequency
 	domain (i.e. apply np.fft.fft2()).
 	"""
 	alg.input_func = None 
-	alg.input_func_args = img_name,use_fft
+	alg.input_func_args = img_name,use_transform
 
 	performance = alg.predict_perf(repNum=1)
 	print performance
-	alg.plot()
+	if plot_on:
+		alg.plot()
 
-	save_img(alg.x_pred, alg.img_shape, '%s_predicted.png'%img_name, use_fft)
+	save_img(alg.x_pred, alg, '%s_predicted.png'%img_name, use_transform)
 
 	return performance
 
@@ -98,17 +101,16 @@ def test_any(alg, repNum=1):
 	return performance
 
 if __name__ == "__main__":
-	# alg = OMP(input_func=gen_basic_dataset, 
-	# 		  input_func_args=50, 
-	# 		  A_func=create_A_matrix, 
-	# 		  N=1024, M=512, threshold=0.5)
-
-	# test_real_img(alg, 'dataset/ee376a.png', use_fft=False)
+	alg = OMP(input_func=gen_basic_dataset, 
+			  input_func_args=10, 
+			  A_func=create_A_matrix, 
+			  N=1024, M=512, threshold=10)
 	
-	# alg = OMP(input_func=gen_verdu_dataset, 
+	# alg = IST(input_func=gen_verdu_dataset, 
 	# 		  input_func_args=(0.2, 1, 0), 
 	# 		  A_func=create_A_matrix, 
-	# 		  N=1024, M=512, threshold=0.5)
+	# 		  N=1024, M=512,
+	# 		  thresholdR=0.0000005, lam=0.1)
 
 	alg = AMP(input_func=gen_basic_dataset, 
 			  input_func_args=10, 
@@ -118,11 +120,13 @@ if __name__ == "__main__":
 	# alg = NB(input_func=gen_basic_dataset, 
 	# 		 input_func_args=10, 
 	# 		 A_func=create_0_1_A_matrix, 
-	# 		 A_param=0.01,
+	# 		 A_param=0.0007,
 	# 		 N=512, M=256)
 
-	# test_any(alg)
-	
+	test_any(alg, repNum=1)
 
-	# test_real_img(alg, , use_fft=False)
-	test_real_song(alg)
+	# test_sound(alg, repNum=1, soundType='c_maj')
+
+	# test_real_img(alg, 'dataset/lenna_more_sparse.png', use_transform=True)
+
+	# test_real_song(alg)

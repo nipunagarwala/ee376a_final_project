@@ -10,7 +10,7 @@ from scipy import misc
 from scipy import misc
 class Algorithm(object):
 
-	def __init__(self, input_func, input_func_args, A_func, N=0, M=0):
+	def __init__(self, input_func, input_func_args, A_func, N=0, M=0, A_param=None):
 		"""
 		@input_func 		- function / data generation function
 		@input_func_args 	- tuple / tuple passed in as the 
@@ -24,6 +24,7 @@ class Algorithm(object):
 		self.input_func = input_func
 		self.input_func_args = input_func_args
 		self.A_func = A_func
+		self.A_param = A_param
 		self.N = N
 		self.M = M
 
@@ -68,7 +69,7 @@ class Algorithm(object):
 		else:
 			self.x = self.input_func(self.N, self.input_func_args)
 
-		self.A = self.A_func((self.M,self.N))
+		self.A = self.A_func((self.M,self.N), self.A_param)
 		self.y = np.matmul(self.A, self.x)
 
 	def predict_long_wav_data(self, fs, outname):

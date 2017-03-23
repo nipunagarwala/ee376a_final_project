@@ -1,5 +1,5 @@
 from algo_by_yuki import OMP,IST,NB
-from algo_by_tun import AMP
+from algo_by_nipun import AMP
 
 from data_gen import *
 
@@ -110,18 +110,18 @@ if __name__ == "__main__":
 	# 		  A_func=create_A_matrix, 
 	# 		  N=1024, M=512, threshold=0.5)
 
-	# alg = AMP(input_func=gen_basic_dataset, 
-	# 		  input_func_args=10, 
-	# 		  A_func=create_normal_A_matrix, 
-	# 		  N=1024, M=512,
-	# 		  lam=0.5, epsilon=1e-4, delta=10)
+	alg = AMP(input_func=gen_basic_dataset, 
+			  input_func_args=10, 
+			  A_func=create_normal_A_matrix, 
+			  N=1024, M=512, epsilon=1e-2, num_iter = 1000)
 
-	alg = NB(input_func=gen_basic_dataset, 
-			 input_func_args=10, 
-			 A_func=create_0_1_A_matrix, 
-			 A_param=0.01,
-			 N=512, M=256)
+	# alg = NB(input_func=gen_basic_dataset, 
+	# 		 input_func_args=10, 
+	# 		 A_func=create_0_1_A_matrix, 
+	# 		 A_param=0.01,
+	# 		 N=512, M=256)
 
 	test_any(alg)
+	
 
 	# test_real_img(alg, 'dataset/lenna_more_sparse.png', use_fft=False)

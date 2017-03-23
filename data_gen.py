@@ -133,7 +133,7 @@ def gen_random_dataset(size, params):
 	return data
 #------------------------------------------------------------
 
-def create_A_matrix(sz, param):
+def create_A_matrix(sz, param=None):
 	"""
 	Generates the 'A' matrix.
 
@@ -143,7 +143,7 @@ def create_A_matrix(sz, param):
 
 	return A
 
-def create_normal_A_matrix(sz, param):
+def create_normal_A_matrix(sz, param=None):
 	"""
 	Generates the 'A' matrix.
 
@@ -153,7 +153,7 @@ def create_normal_A_matrix(sz, param):
 
 	return A
 
-def create_0_1_A_matrix(sz, param):
+def create_0_1_A_matrix(sz, param=0.002):
 	"""
 	Generates the 'A' matrix.
 

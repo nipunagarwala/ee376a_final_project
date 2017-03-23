@@ -113,7 +113,7 @@ if __name__ == "__main__":
 	alg = AMP(input_func=gen_basic_dataset, 
 			  input_func_args=10, 
 			  A_func=create_normal_A_matrix, 
-			  N=1024, M=512, epsilon=1e-2, num_iter = 1000)
+			  N=1024, M=512, epsilon=1e-4, num_iter = 5000)
 
 	# alg = NB(input_func=gen_basic_dataset, 
 	# 		 input_func_args=10, 
@@ -121,7 +121,8 @@ if __name__ == "__main__":
 	# 		 A_param=0.01,
 	# 		 N=512, M=256)
 
-	test_any(alg)
+	# test_any(alg)
 	
 
-	# test_real_img(alg, 'dataset/lenna_more_sparse.png', use_fft=False)
+	# test_real_img(alg, , use_fft=False)
+	test_real_song(alg)

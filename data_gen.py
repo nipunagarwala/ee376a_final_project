@@ -113,7 +113,7 @@ def gen_basic_dataset(size, params):
 	"""
 
 	data = np.zeros(size)
-	K = np.ceil(0.01*size).astype(int)
+	K = params #np.ceil(0.01*size).astype(int)
 	indx = np.random.choice(size, size=K, replace=False)
 	data[indx] = 1
 
@@ -133,7 +133,7 @@ def gen_random_dataset(size, params):
 	return data
 #------------------------------------------------------------
 
-def create_A_matrix(sz, param):
+def create_A_matrix(sz, param=None):
 	"""
 	Generates the 'A' matrix.
 
@@ -143,17 +143,17 @@ def create_A_matrix(sz, param):
 
 	return A
 
-def create_normal_A_matrix(sz, param):
+def create_normal_A_matrix(sz, param=None):
 	"""
 	Generates the 'A' matrix.
 
 	@sz - tuple / size of A
 	"""
-	A = np.random.normal(0,1.0/512,sz)
+	A = np.random.normal(0,1.0/sz[0],sz)
 
 	return A
 
-def create_0_1_A_matrix(sz, param):
+def create_0_1_A_matrix(sz, param=0.1):
 	"""
 	Generates the 'A' matrix.
 

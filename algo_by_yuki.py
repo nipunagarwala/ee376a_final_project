@@ -68,7 +68,7 @@ class IST(Algorithm):
 		https://pdfs.semanticscholar.org/b2ff/10caa8005521bd8a4d165d44d14df3d841e1.pdf
 	"""
 
-	def __init__(self, input_func, input_func_args, A_func, N, M, thresholdR=0.05, lam=5):
+	def __init__(self, input_func, input_func_args, A_func, N, M, thresholdR=0.05, lam=0.5):
 		Algorithm.__init__(self, input_func, input_func_args, A_func, N, M)
 		self.thresholdR = thresholdR
 		self.lam = lam
@@ -103,10 +103,82 @@ class IST(Algorithm):
 
 			if counter%500==1:
 				print 'writing...'
-				save_img(self.x_pred, self.img_shape, 
-						 '%s_%d.png'%(self.input_func_args[0].replace('.png',''),counter),
-						 use_fft=self.input_func_args[1])
+				# save_img(self.x_pred, self.img_shape, 
+				# 		 '%s_%d.png'%(self.input_func_args[0].replace('.png',''),counter),
+				# 		 use_fft=self.input_func_args[1])
 
+		return self.x_pred
+
+class NB(Algorithm):
+	"""
+	Implementation of the Node-Based Algorithm
+	"""
+
+	def __init__(self, input_func, input_func_args, A_func, N, M, A_param):
+		Algorithm.__init__(self, input_func, input_func_args, A_func, N, M, A_param=A_param)
+
+	def predict(self):
+		# stats on A
+		delI = np.sum(self.A, axis=1)
+		delJ = np.sum(self.A, axis=0)
+		
+		connectedToI = [np.nonzero(self.A[m,:])[0] for m in range(self.M)]
+		connectedToJ = [np.nonzero(self.A[:,n])[0] for n in range(self.N)]
+
+		# initialize
+		d = delI.copy()
+		xi = self.y.copy()
+		s = np.zeros_like(self.x)
+		w = np.zeros_like(self.x)
+
+		count = 0
+		epsilon = 0.01
+		prevS = -1
+		# iteration
+		while True:
+			for n in range(self.N):
+				if s[n]==1:
+					continue
+
+				prevList = []
+				for m in connectedToJ[n]:
+					if d[m] == 1:
+						s[n] = 1
+						w[n] = xi[m]
+						break
+
+					if np.abs(xi[m]) < epsilon:
+						s[n] = 1
+						w[n] = 0
+						break
+
+					# if xi[m] in prevList:
+					# 	s[n] = 1
+					# 	w[n] = xi[m]
+					# 	break
+					# else:
+					# 	prevList.append(xi[m])
+
+			for m in range(self.M):
+				d[m] = np.sum(s[connectedToI[m]]==0)
+				xi[m] = self.y[m] - np.dot(s[connectedToI[m]], w[connectedToI[m]])
+
+			count += 1
+			# if count==100:
+			# 	break
+			if count%2==0:
+				print '.'
+			if count%25==1:
+				print 'writing...'
+				# save_img(w, self.img_shape, 
+				# 		 '%s_%d.png'%(self.input_func_args[0].replace('.png',''),count),
+				# 		 use_fft=self.input_func_args[1])
+
+			if np.sum(s)==self.N or prevS==np.sum(s):
+				break
+			prevS = np.sum(s)
+
+		self.x_pred = w
 		return self.x_pred
 
 def usages():

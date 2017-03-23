@@ -1,4 +1,5 @@
 import numpy as np
+import scipy
 import pickle
 
 from utils import *
@@ -132,7 +133,7 @@ def gen_random_dataset(size, params):
 	return data
 #------------------------------------------------------------
 
-def create_A_matrix(sz):
+def create_A_matrix(sz, param):
 	"""
 	Generates the 'A' matrix.
 
@@ -142,13 +143,23 @@ def create_A_matrix(sz):
 
 	return A
 
-def create_normal_A_matrix(sz):
+def create_normal_A_matrix(sz, param):
 	"""
 	Generates the 'A' matrix.
 
 	@sz - tuple / size of A
 	"""
-	A = numpy.random.normal(0,1,sz)
+	A = np.random.normal(0,1,sz)
+
+	return A
+
+def create_0_1_A_matrix(sz, param):
+	"""
+	Generates the 'A' matrix.
+
+	@sz - tuple / size of A
+	"""
+	A = bernoulli.rvs(p=param, size=sz)
 
 	return A
 

@@ -2,6 +2,7 @@ import numpy as np
 import os
 import sys
 from algorithms import Algorithm
+from utils import *
 
 
 
@@ -11,7 +12,7 @@ class AMP(Algorithm):
 	def __init__(self, input_func, input_func_args, A_func, N, M, epsilon=1e-2, lam = 2, num_iter = 2000):
 		Algorithm.__init__(self, input_func, input_func_args, A_func, N, M)
 		self.epsilon = epsilon
-		self.num_iter = 1000
+		self.num_iter = num_iter
 		self.lam = lam
 
 
@@ -34,8 +35,8 @@ class AMP(Algorithm):
 		n,N = self.A.shape
 		k = 10
 		xhat = np.zeros((N, 1))
-		# z = np.expand_dims(self.y, axis=1)
-		z = np.expand_dims(np.zeros_like(self.y), axis=1)
+		z = np.expand_dims(self.y, axis=1)
+		# z = np.expand_dims(np.zeros_like(self.y), axis=1)
 		cur_y = np.expand_dims(self.y, axis=1)
 		thresh = 1.
 		for i in range(0, self.num_iter):
@@ -55,13 +56,19 @@ class AMP(Algorithm):
 
 			# print "Checking random norms: {0}".format(cur_y - np.dot(self.A,xhat))
 
-			z = cur_y - np.dot(self.A,xhat) + (z*1.0/n)*np.mean(eta_prime(xold + np.dot(self.A.T, z), thresh_old))
+			z = cur_y - np.dot(self.A,xhat) + (z*1.0/n)*np.mean(eta_prime(r, thresh))
 
 			print "Done with iteration {0} \n".format(i)
 			if np.sum((cur_y - np.dot(self.A,xhat))**2)/np.sum(cur_y**2) < self.epsilon:
 				self.x_pred = np.round(xhat)
 				print "Our estimate xhat is: {0}".format(xhat)
 				break
+
+			# if i%100==1:
+			# 	print 'writing...'
+				# save_img(xhat, self.img_shape, 
+				# 		 '%s_%d.png'%(self.input_func_args[0].replace('.png',''),i),
+				# 		 use_fft=self.input_func_args[1])
 
 
 
